@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bahasa Indonesia Kelas 4 SD</title>
+    
+    <!-- Memuat Tailwind CSS untuk tata letak responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Memuat Google Fonts yang ramah anak dan mudah dibaca -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Pengaturan Font Utama & Optimasi Layar Sentuh (HP & PID) */
+        html, body {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Mode Layar Penuh (Native Fullscreen & Fallback Layar Lebar untuk PID/Laptop) */
+        body.is-fullscreen {
+            padding: 0.75rem 1rem !important;
+            justify-content: center;
+        }
+
+        body.is-fullscreen #topBar,
+        body.is-fullscreen #mainContainer {
+            max-width: 1200px !important;
+            width: 100% !important;
+        }
+
+        body.is-fullscreen #questionText {
+            font-size: clamp(1.25rem, 2.3vw, 2rem);
+            line-height: 1.45;
+        }
+
+        body.is-fullscreen .option-btn {
+            min-height: 76px;
+            padding: 1.15rem 1.25rem;
+        }
+
+        body.is-fullscreen .option-text {
+            font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+        }
+
+        /* Efek Tombol 3D Interaktif ala Game */
+/* ... existing code ... -->
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col items-center justify-center p-2.5 sm:p-5 lg:p-6">
+
+    <!-- Kanvas untuk Efek Perayaan Confetti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Notifikasi Ringan (Toast) untuk Status Layar Penuh -->
+    <div id="toastNotice" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800/90 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-lg z-50 animate-pop text-center">
+    </div>
+
+    <!-- Bilah Kontrol Atas (Judul, Suara, & Layar Penuh) -->
+    <div id="topBar" class="w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-between items-center gap-2 mb-3 transition-all duration-300">
+        <div class="flex items-center gap-2 bg-white/85 backdrop-blur px-3 py-1.5 rounded-full shadow-sm border border-sky-200 min-w-0">
+            <span class="text-lg sm:text-xl shrink-0">📚</span>
+            <span class="font-display font-semibold text-sky-700 text-xs sm:text-base truncate">Bahasa Indonesia Kelas 4</span>
+        </div>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <button id="soundToggleBtn" onclick="toggleSound()" class="bg-white/90 hover:bg-white text-slate-700 px-3 py-2 sm:py-1.5 rounded-full shadow-sm border border-slate-200 flex items-center gap-1.5 text-xs sm:text-sm font-bold transition cursor-pointer" title="Aktifkan/Matikan Suara">
+                <span id="soundIcon">🔊</span>
+                <span id="soundLabel" class="hidden sm:inline">Suara: ON</span>
+            </button>
+            <button id="fullscreenBtn" onclick="toggleFullscreen()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 sm:py-1.5 rounded-full shadow-sm border border-indigo-700 flex items-center gap-1.5 text-xs sm:text-sm font-bold transition cursor-pointer" title="Mode Layar Penuh (Cocok untuk PID, Laptop, & HP)">
+                <span id="fullscreenIcon">⛶</span>
+                <span id="fullscreenLabel" class="hidden sm:inline">Layar Penuh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Kontainer Utama Game (Responsif HP, Laptop, dan PID) -->
+    <main id="mainContainer" class="w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-xl border-4 border-white overflow-hidden relative transition-all duration-300">
+
+        <!-- ========================================== -->
+        <!-- LAYAR 1: HALAMAN AWAL & INPUT NAMA KELOMPOK -->
+        <!-- ========================================== -->
+        <section id="startScreen" class="p-4 sm:p-8 lg:p-10 text-center animate-pop">
+                        <!-- Badan Burung Hantu -->
+                        <ellipse cx="50" cy="56" rx="34" ry="36" fill="#3B82F6"/>
+                        <ellipse cx="50" cy="64" rx="22" ry="24" fill="#DBEAFE"/>
+                        <!-- Telinga -->
+                        <polygon points="22,32 32,16 40,28" fill="#2563EB"/>
+                        <polygon points="78,32 68,16 60,28" fill="#2563EB"/>
+                        <!-- Mata -->
+                        <circle cx="37" cy="44" r="11" fill="white" stroke="#1E3A8A" stroke-width="2.5"/>
+                        <circle cx="63" cy="44" r="11" fill="white" stroke="#1E3A8A" stroke-width="2.5"/>
+                        <circle cx="39" cy="44" r="5" fill="#1E293B"/>
+                        <circle cx="61" cy="44" r="5" fill="#1E293B"/>
+                        <circle cx="40.5" cy="42.5" r="1.8" fill="white"/>
+                        <circle cx="62.5" cy="42.5" r="1.8" fill="white"/>
+                        <!-- Paruh -->
+                        <polygon points="45,52 55,52 50,60" fill="#F59E0B"/>
+                        <!-- Topi Wisuda Mini -->
+                        <polygon points="50,8 28,17 50,26 72,17" fill="#1E293B"/>
+                        <rect x="40" y="21" width="20" height="6" rx="2" fill="#334155"/>
+                        <line x1="72" y1="17" x2="72" y2="28" stroke="#F59E0B" stroke-width="2.5"/>
+                        <circle cx="72" cy="29" r="2.5" fill="#F59E0B"/>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-display font-bold text-indigo-700 mb-2">
+                Petualangan Kata! 🌟
+            </h1>
+            <p class="text-slate-600 text-sm sm:text-base max-w-lg mx-auto mb-6">
+                Uji kemampuan Bahasa Indonesia Kelas 4 tentang <strong>Kata Baku</strong>, <strong>Kata Tidak Baku</strong>, <strong>Kata Dasar</strong>, dan <strong>Kata Berimbuhan</strong>.
+            </p>
+
+            <!-- Kartu Informasi Aturan Main -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6 max-w-lg mx-auto">
+                <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-3">
+                    <div class="text-2xl mb-1">📝</div>
+                    <div class="font-display font-bold text-sky-800 text-lg">20 Soal</div>
+                    <div class="text-xs text-sky-600 font-semibold">Pilihan Ganda</div>
+                </div>
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-3">
+                    <div class="text-2xl mb-1">⭐</div>
+                    <div class="font-display font-bold text-emerald-800 text-lg">+5 Poin</div>
+                    <div class="text-xs text-emerald-600 font-semibold">Maksimal 100</div>
+                </div>
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3">
+                    <div class="text-2xl mb-1">⏱️</div>
+                    <div class="font-display font-bold text-amber-800 text-lg">Timer</div>
+                    <div class="text-xs text-amber-600 font-semibold">Adu Cepat!</div>
+                </div>
+            </div>
+
+            <!-- Form Input Nama Kelompok / Pemain -->
+            <div class="max-w-md mx-auto bg-indigo-50/80 border-2 border-indigo-200 rounded-2xl p-5 mb-6">
+                <label for="groupNameInput" class="block text-left font-display font-semibold text-indigo-900 mb-2 text-base">
+                    🏷️ Masukkan Nama Kelompok / Pemain:
+                </label>
+                <input 
+                    type="text" 
+                    id="groupNameInput" 
+                    maxlength="30"
+                    placeholder="Contoh: Kelompok Garuda / Budi"
+                    class="w-full px-4 py-3 rounded-xl border-2 border-indigo-300 focus:border-indigo-500 focus:outline-none text-slate-800 font-bold text-base bg-white shadow-inner transition"
+                    onkeypress="if(event.key === 'Enter') startGame()"
+                >
+                <p id="nameErrorMsg" class="text-rose-600 text-xs font-bold mt-2 text-left hidden">
+                    ⚠️ Yuk, isi nama kelompok atau namamu terlebih dahulu!
+                </p>
+
+                <button 
+                    onclick="startGame()" 
+                    class="btn-3d mt-4 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-display font-bold text-xl py-3.5 px-6 rounded-2xl shadow-[0_5px_0_0_#3730a3] cursor-pointer flex items-center justify-center gap-2"
+                >
+                    <span>🚀 Mulai Permainan!</span>
+                </button>
+            </div>
+
+            <!-- Ringkasan Rekor Saat Ini (Nilai Tertinggi & Waktu Tercepat) -->
+            <div id="homeRecordSummary" class="max-w-lg mx-auto mb-4">
+                <!-- Diisi secara dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Tombol Lihat Papan Peringkat -->
+            <button 
+                onclick="openLeaderboardModal()" 
+                class="text-indigo-600 hover:text-indigo-800 font-bold text-sm underline underline-offset-4 cursor-pointer inline-flex items-center gap-1"
+            >
+                🏆 Lihat Papan Peringkat & Data Kelompok
+            </button>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- LAYAR 2: AREA PERMAINAN (KUIS 20 SOAL)     -->
+        <!-- ========================================== -->
+        <section id="gameScreen" class="hidden p-4 sm:p-7 lg:p-9">
+            <!-- Header Status Permainan (HUD) -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b-2 border-slate-100 mb-5">
+                <div class="flex items-center gap-2 bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded-xl font-bold text-sm">
+                    <span>👥</span>
+                    <span id="displayGroupName" class="truncate max-w-[140px] sm:max-w-[200px]">Kelompok</span>
+                </div>
+                
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Timer -->
+                    <div class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl font-display font-bold text-sm sm:text-base flex items-center gap-1.5">
+                        <span>⏱️</span>
+                        <span id="timerDisplay">00:00</span>
+                    </div>
+                    <!-- Skor Sementara -->
+                    <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl font-display font-bold text-sm sm:text-base flex items-center gap-1.5">
+                        <span>⭐</span>
+                        <span>Skor: <span id="scoreDisplay">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar & Nomor Soal -->
+            <div class="mb-5">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span id="topicBadge" class="inline-block bg-sky-100 text-sky-700 font-bold text-xs sm:text-sm px-3 py-1 rounded-full border border-sky-200">
+                        Materi: Kata Baku
+                    </span>
+                    <span class="font-display font-bold text-slate-500 text-sm">
+                        Soal <span id="questionNumber" class="text-indigo-600 text-base">1</span> / 20
+                    </span>
+                </div>
+                <div class="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden p-0.5">
+                    <div id="progressBar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: 5%"></div>
+                </div>
+            </div>
+
+            <!-- Kotak Pertanyaan -->
+            <div id="questionCard" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 sm:p-6 lg:p-7 mb-4 sm:mb-5 shadow-sm">
+                <h2 id="questionText" class="text-base sm:text-xl lg:text-2xl font-bold text-slate-800 leading-relaxed">
+                    Memuat pertanyaan...
+                </h2>
+            </div>
+
+            <!-- Pilihan Jawaban (A, B, C, D) -->
+            <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-5">
+                <!-- Tombol opsi dibuat dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Kotak Umpan Balik (Muncul setelah menjawab) -->
+            <div id="feedbackBox" class="hidden rounded-2xl p-4 sm:p-5 border-2 animate-pop">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <h3 id="feedbackTitle" class="font-display font-bold text-lg mb-1">Benar! +5 Poin</h3>
+                        <p id="feedbackExplanation" class="text-sm leading-relaxed"></p>
+                    </div>
+                    <button 
+                        id="nextQuestionBtn"
+                        onclick="nextQuestion()" 
+                        class="btn-3d shrink-0 bg-indigo-600 hover:bg-indigo-500 text-white font-display font-bold px-6 py-3 rounded-xl shadow-[0_4px_0_0_#3730a3] cursor-pointer text-base"
+                    >
+                        Soal Berikutnya ➡️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- LAYAR 3: HASIL AKHIR & PAPAN PERINGKAT     -->
+        <!-- ========================================== -->
+        <section id="resultScreen" class="hidden p-6 sm:p-8 text-center animate-pop">
+            <div id="resultEmoji" class="text-6xl mb-2">🏆</div>
+            <h2 class="text-2xl sm:text-3xl font-display font-bold text-indigo-700 mb-1">
+                Permainan Selesai!
+            </h2>
+            <p class="text-slate-600 font-bold mb-5">
+                Kerja bagus, <span id="resultGroupName" class="text-indigo-600">Kelompok</span>!
+            </p>
+
+            <!-- Ringkasan Skor & Waktu Pemain Saat Ini -->
+            <div class="grid grid-cols-3 gap-3 max-w-lg mx-auto mb-6">
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3 sm:p-4">
+                    <div class="text-xs font-bold text-indigo-500 uppercase">Skor Akhir</div>
+                    <div id="finalScore" class="text-3xl sm:text-4xl font-display font-bold text-indigo-700 my-1">100</div>
+                    <div class="text-xs text-slate-500 font-semibold">dari 100</div>
+                </div>
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-3 sm:p-4">
+                    <div class="text-xs font-bold text-emerald-600 uppercase">Jawaban Benar</div>
+                    <div id="finalCorrect" class="text-3xl sm:text-4xl font-display font-bold text-emerald-700 my-1">20</div>
+                    <div class="text-xs text-slate-500 font-semibold">dari 20 soal</div>
+                </div>
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 sm:p-4">
+                    <div class="text-xs font-bold text-amber-600 uppercase">Total Waktu</div>
+                    <div id="finalTime" class="text-2xl sm:text-3xl font-display font-bold text-amber-700 my-2">01:25</div>
+                    <div class="text-xs text-slate-500 font-semibold">menit:detik</div>
+                </div>
+            </div>
+
+            <!-- Predikat Nilai -->
+            <div id="resultBadge" class="inline-block bg-amber-100 text-amber-800 border-2 border-amber-300 font-display font-bold px-5 py-2 rounded-full text-base mb-6">
+                🌟 Predikat: Juara Bahasa Indonesia!
+            </div>
+
+            <!-- Kartu Rekor: Nilai Tertinggi & Waktu Tercepat -->
+            <div class="bg-gradient-to-r from-indigo-50 via-sky-50 to-emerald-50 border-2 border-indigo-200 rounded-2xl p-4 sm:p-5 mb-6 text-left">
+                <h3 class="font-display font-bold text-indigo-900 text-lg mb-3 flex items-center gap-2">
+                    <span>👑</span> Data Rekor Terbaik Saat Ini
+                </h3>
+                <div id="resultRecordCards" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Diisi dinamis oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Tabel Papan Peringkat Semua Kelompok -->
+            <div class="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden mb-6 text-left">
+                <div class="bg-slate-100 px-4 py-3 flex justify-between items-center border-b border-slate-200">
+                    <h3 class="font-display font-bold text-slate-700 text-base">📊 Papan Peringkat Kelompok</h3>
+                    <button onclick="openResetModal()" class="text-xs text-rose-600 hover:text-rose-800 font-bold cursor-pointer">
+                        🗑️ Hapus Data
+                    </button>
+                </div>
+                <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 sticky top-0">
+                            <tr>
+                                <th class="py-2.5 px-3 text-center w-12">#</th>
+                                <th class="py-2.5 px-3">Nama Kelompok</th>
+                                <th class="py-2.5 px-3 text-center">Skor</th>
+                                <th class="py-2.5 px-3 text-center">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultLeaderboardBody" class="divide-y divide-slate-100">
+                            <!-- Diisi dinamis oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
+                <button 
+                    onclick="goToHome()" 
+                    class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white font-display font-bold text-lg py-3 px-8 rounded-2xl shadow-[0_5px_0_0_#3730a3] cursor-pointer"
+                >
+                    🔄 Main Lagi (Kelompok Baru)
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL PAPAN PERINGKAT (DARI HALAMAN AWAL)  -->
+    <!-- ========================================== -->
+    <div id="leaderboardModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border-4 border-indigo-100 animate-pop max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-display font-bold text-2xl text-indigo-700 flex items-center gap-2">
+                    <span>🏆</span> Papan Peringkat
+                </h3>
+                <button onclick="closeLeaderboardModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-600 cursor-pointer">✕</button>
+            </div>
+
+            <!-- Rekor Tertinggi & Tercepat di Modal -->
+            <div id="modalRecordCards" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <!-- Diisi dinamis -->
+            </div>
+
+            <!-- Daftar Peringkat -->
+            <div class="border-2 border-slate-200 rounded-2xl overflow-hidden flex-1 overflow-y-auto mb-4">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 sticky top-0">
+                        <tr>
+                            <th class="py-2.5 px-3 text-center w-12">#</th>
+                            <th class="py-2.5 px-3">Nama Kelompok</th>
+                            <th class="py-2.5 px-3 text-center">Skor</th>
+                            <th class="py-2.5 px-3 text-center">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalLeaderboardBody" class="divide-y divide-slate-100">
+                        <!-- Diisi dinamis -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button onclick="openResetModal()" class="text-xs text-rose-600 hover:text-rose-800 font-bold cursor-pointer">
+                    🗑️ Reset Semua Data
+                </button>
+                <button onclick="closeLeaderboardModal()" class="btn-3d bg-indigo-600 text-white font-display font-bold px-5 py-2 rounded-xl shadow-[0_3px_0_0_#3730a3] cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL KONFIRMASI HAPUS DATA (PENGGANTI CONFIRM) -->
+    <!-- ========================================== -->
+    <div id="resetConfirmModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-4 border-rose-100 animate-pop">
+            <div class="text-5xl mb-3">⚠️</div>
+            <h3 class="font-display font-bold text-xl text-slate-800 mb-2">Hapus Semua Data Peringkat?</h3>
+            <p class="text-sm text-slate-600 mb-6">
+                Semua data nilai tertinggi dan waktu tercepat dari kelompok sebelumnya akan dihapus permanen.
+            </p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeResetModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-slate-700 cursor-pointer">
+                    Batal
+                </button>
+                <button onclick="confirmResetData()" class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 font-bold text-white cursor-pointer">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LOGIKA JAVASCRIPT GAME                     -->
+    <!-- ========================================== -->
+    <script>
+        /* ==============================================================
+           1. BANK SOAL (20 SOAL BAHASA INDONESIA KELAS 4 SD)
+           Terdiri dari:
+           - 5 Soal Kata Baku
+           - 5 Soal Kata Tidak Baku
+           - 5 Soal Kata Dasar
+           - 5 Soal Jenis Kata Berimbuhan
+           ============================================================== */
+        const QUESTIONS_BANK = [
+            // --- KATA BAKU (5 Soal) ---
+            {
+                topic: "Kata Baku",
+                question: "Ibu membeli obat sakit kepala di ... terdekat. Kata baku yang tepat untuk melengkapi kalimat tersebut adalah ...",
+                options: ["Apotik", "Apotek", "Apoteek", "Apotig"],
+                answer: 1,
+                explanation: "Menurut KBBI, penulisan kata baku yang benar adalah 'apotek', bukan 'apotik'."
+            },
+            {
+                topic: "Kata Baku",
+                question: "Manakah di bawah ini yang merupakan penulisan kata baku yang tepat?",
+                options: ["Ijin", "Idzin", "Izin", "Ijzin"],
+                answer: 2,
+                explanation: "Kata baku yang tepat adalah 'izin' (menggunakan huruf z, bukan j)."
+            },
+            {
+                topic: "Kata Baku",
+                question: "Kakak bercita-cita menjadi seorang ... bulu tangkis yang mengharumkan nama bangsa. Kata baku yang tepat adalah ...",
+                options: ["Atlit", "Atlet", "Atelit", "Atleet"],
+                answer: 1,
+                explanation: "Penulisan kata baku untuk olahragawan adalah 'atlet', bukan 'atlit'."
+            },
+            {
+                topic: "Kata Baku",
+                question: "Para pembeli sedang ... dengan tertib di depan kasir. Kata baku yang tepat untuk mengisi titik-titik tersebut adalah ...",
+                options: ["Antri", "Antre", "Antrey", "Anteri"],
+                answer: 1,
+                explanation: "Menurut KBBI, bentuk kata baku yang benar adalah 'antre', bukan 'antri'."
+            },
+            {
+                topic: "Kata Baku",
+                question: "Manakah kalimat di bawah ini yang menggunakan kata baku dengan tepat?",
+                options: [
+                    "Siswa kelas 4 sedang praktek menanam kacang hijau.",
+                    "Ayah memberi nasehat agar aku rajin belajar.",
+                    "Siswa kelas 4 sedang praktik menanam kacang hijau.",
+                    "Aku hanya punya uang seribu rupiah cuman buat jajan."
+                ],
+                answer: 2,
+                explanation: "Kata 'praktik' adalah bentuk baku (bukan praktek). Kata 'nasehat' seharusnya 'nasihat', dan 'cuman' seharusnya 'cuma/hanya'."
+            },
+
+            // --- KATA TIDAK BAKU (5 Soal) ---
+            {
+                topic: "Kata Tidak Baku",
+                question: "Di bawah ini yang termasuk kata TIDAK baku adalah ...",
+                options: ["Jadwal", "Zaman", "Nasihat", "Aktifitas"],
+                answer: 3,
+                explanation: "'Aktifitas' adalah kata tidak baku. Penulisan kata bakunya yang benar adalah 'aktivitas' (menggunakan huruf v)."
+            },
+            {
+                topic: "Kata Tidak Baku",
+                question: "Perhatikan kalimat berikut: 'Paman pergi ke luar kota naik bis pariwisata.' Kata TIDAK baku pada kalimat tersebut adalah ...",
+                options: ["Paman", "Kota", "Bis", "Pariwisata"],
+                answer: 2,
+                explanation: "'Bis' adalah kata tidak baku. Bentuk kata baku yang benar menurut KBBI adalah 'bus'."
+            },
+            {
+                topic: "Kata Tidak Baku",
+                question: "Kata-kata di bawah ini semuanya adalah kata baku, KECUALI ...",
+                options: ["Cabai", "Coklat", "Teknik", "Kualitas"],
+                answer: 1,
+                explanation: "'Coklat' adalah kata tidak baku. Penulisan kata bakunya yang tepat adalah 'cokelat'."
+            },
+            {
+                topic: "Kata Tidak Baku",
+                question: "'Jangan lupa meminta kwitansi sebagai bukti pembayaran.' Kata tidak baku dalam kalimat tersebut adalah ...",
+                options: ["Meminta", "Kwitansi", "Bukti", "Pembayaran"],
+                answer: 1,
+                explanation: "'Kwitansi' adalah kata tidak baku. Bentuk kata baku yang benar adalah 'kuitansi'."
+            },
+            {
+                topic: "Kata Tidak Baku",
+                question: "Pasangan kata TIDAK baku dan kata baku yang tepat di bawah ini adalah ...",
+                options: [
+                    "Nafas - Napas",
+                    "Napas - Nafas",
+                    "Jadwal - Jadual",
+                    "Kualitas - Kwalitas"
+                ],
+                answer: 0,
+                explanation: "'Nafas' adalah kata tidak baku, sedangkan kata bakunya yang benar adalah 'napas'."
+            },
+
+            // --- KATA DASAR (5 Soal) ---
+            {
+                topic: "Kata Dasar",
+                question: "Rina membantu ibu 'menyapu' halaman rumah setiap pagi. Kata dasar dari kata 'menyapu' adalah ...",
+                options: ["Nyapu", "Sapu", "Menya", "Apu"],
+                answer: 1,
+                explanation: "Kata 'menyapu' berasal dari awalan 'me-' + kata dasar 'sapu'. Huruf 's' luluh menjadi 'ny'."
+            },
+            {
+                topic: "Kata Dasar",
+                question: "Anak-anak kelas 4 sedang 'bermain' lompat tali di lapangan. Kata dasar dari 'bermain' adalah ...",
+                options: ["Main", "Bermain", "Mainan", "Permain"],
+                answer: 0,
+                explanation: "Kata 'bermain' terbentuk dari awalan 'ber-' dan kata dasar 'main'."
+            },
+            {
+                topic: "Kata Dasar",
+                question: "Siti 'mendengarkan' penjelasan guru dengan saksama. Kata dasar dari 'mendengarkan' adalah ...",
+                options: ["Dengarkan", "Mendengar", "Dengar", "Engar"],
+                answer: 2,
+                explanation: "Kata 'mendengarkan' berasal dari imbuhan 'me-...-kan' dan kata dasar 'dengar'."
+            },
+            {
+                topic: "Kata Dasar",
+                question: "Sebelum makan, kita wajib 'mencuci' tangan pakai sabun. Kata dasar dari 'mencuci' adalah ...",
+                options: ["Mencu", "Cuci", "Cucian", "Ncuci"],
+                answer: 1,
+                explanation: "Kata 'mencuci' berasal dari awalan 'me-' yang bertemu kata dasar 'cuci'."
+            },
+            {
+                topic: "Kata Dasar",
+                question: "Lani sangat pandai 'menari' tari tradisional. Kata dasar dari kata 'menari' adalah ...",
+                options: ["Nari", "Tari", "Penari", "Menar"],
+                answer: 1,
+                explanation: "Kata 'menari' berasal dari awalan 'me-' + kata dasar 'tari'. Huruf 't' luluh menjadi 'n'."
+            },
+
+            // --- JENIS KATA BERIMBUHAN (5 Soal) ---
+            {
+                topic: "Kata Berimbuhan",
+                question: "Kata 'berlari' (ber- + lari) merupakan contoh kata berimbuhan yang mendapatkan ...",
+                options: [
+                    "Awalan (Prefiks)",
+                    "Akhiran (Sufiks)",
+                    "Sisipan (Infiks)",
+                    "Gabungan (Konfiks)"
+                ],
+                answer: 0,
+                explanation: "Imbuhan 'ber-' diletakkan di depan kata dasar 'lari', sehingga disebut Awalan (Prefiks)."
+            },
+            {
+                topic: "Kata Berimbuhan",
+                question: "Kata 'makanan' (makan + -an) mendapatkan jenis imbuhan berupa ...",
+                options: [
+                    "Awalan (Prefiks)",
+                    "Sisipan (Infiks)",
+                    "Akhiran (Sufiks)",
+                    "Gabungan (Konfiks)"
+                ],
+                answer: 2,
+                explanation: "Imbuhan '-an' terletak di belakang kata dasar 'makan', sehingga disebut Akhiran (Sufiks)."
+            },
+            {
+                topic: "Kata Berimbuhan",
+                question: "Kata 'kebersihan' terbentuk dari imbuhan 'ke-...-an' dan kata dasar 'bersih'. Jenis imbuhan ini disebut ...",
+                options: [
+                    "Awalan (Prefiks)",
+                    "Akhiran (Sufiks)",
+                    "Sisipan (Infiks)",
+                    "Gabungan awalan dan akhiran (Konfiks)"
+                ],
+                answer: 3,
+                explanation: "Imbuhan yang melekat di awal dan akhir kata dasar secara bersamaan ('ke-...-an') disebut Gabungan atau Konfiks."
+            },
+            {
+                topic: "Kata Berimbuhan",
+                question: "Kata 'gemetar' berasal dari kata dasar 'getar' yang diberi imbuhan '-em-' di tengah kata. Imbuhan di tengah kata disebut ...",
+                options: [
+                    "Awalan (Prefiks)",
+                    "Sisipan (Infiks)",
+                    "Akhiran (Sufiks)",
+                    "Kata Ulang"
+                ],
+                answer: 1,
+                explanation: "Imbuhan yang disisipkan di tengah kata dasar seperti '-em-', '-el-', atau '-er-' disebut Sisipan (Infiks)."
+            },
+            {
+                topic: "Kata Berimbuhan",
+                question: "Jika kata dasar 'tulis' diberi awalan 'me-', maka bentuk kata berimbuhan yang benar adalah ...",
+                options: ["Mentulis", "Metulis", "Menulis", "Menyulis"],
+                answer: 2,
+                explanation: "Kata dasar berawalan huruf 't' (seperti 'tulis') akan luluh jika bertemu awalan 'me-', sehingga menjadi 'menulis'."
+            }
+        ];
+
+        /* ==============================================================
+           2. VARIABEL STATE PERMAINAN & PENYIMPANAN DATA
+           ============================================================== */
+        const STORAGE_KEY = 'kuis_bindo_kelas4_leaderboard_v1';
+        const POINTS_PER_QUESTION = 5;
+
+        let currentGroupName = '';
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let currentScore = 0;
+        let correctCount = 0;
+        let elapsedSeconds = 0;
+        let timerInterval = null;
+        let isAnswered = false;
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        /* ==============================================================
+           3. EFEK SUARA (WEB AUDIO API - TANPA FILE EKSTERNAL)
+           ============================================================== */
+        function initAudio() {
+            try {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) audioCtx = new AudioContext();
+                }
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch (e) {
+                console.warn('AudioContext tidak didukung:', e);
+            }
+        }
+
+        function playTone(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    // Nada ceria naik (C5 -> E5 -> G5)
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    // Nada rendah turun
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'finish') {
+                    // Nada fanfare kemenangan
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, i) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'triangle';
+                        o.frequency.setValueAtTime(freq, now + i * 0.11);
+                        g.gain.setValueAtTime(0.2, now + i * 0.11);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.11 + 0.35);
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.start(now + i * 0.11);
+                        o.stop(now + i * 0.11 + 0.35);
+                    });
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch (e) {
+                // Abaikan jika browser memblokir audio
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundLabel').textContent = soundEnabled ? 'Suara: ON' : 'Suara: OFF';
+            if (soundEnabled) playTone('click');
+        }
+
+        /* ==============================================================
+           4. MANAJEMEN DATA PAPAN PERINGKAT (LOCALSTORAGE)
+           ============================================================== */
+        function getLeaderboardData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.warn('Gagal membaca localStorage:', e);
+                return [];
+            }
+        }
+
+        function saveRecord(name, score, timeSeconds, correct) {
+            const data = getLeaderboardData();
+            const newRecord = {
+                id: Date.now(),
+                name: name,
+                score: score,
+                timeSeconds: timeSeconds,
+                correct: correct,
+                date: new Date().toLocaleDateString('id-ID')
+            };
+            data.push(newRecord);
+
+            // Urutkan berdasarkan Skor Tertinggi, jika sama maka Waktu Tercepat
+            data.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.timeSeconds - b.timeSeconds;
+            });
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch (e) {
+                console.warn('Gagal menyimpan ke localStorage:', e);
+            }
+            return { data, newRecord };
+        }
+
+        // Mencari Nilai Tertinggi dan Waktu Tercepat
+        function getHighlights(data) {
+            if (!data || data.length === 0) return { highestScore: null, fastestTime: null };
+
+            // Nilai Tertinggi (jika skor sama, pilih yang lebih cepat)
+            const highestScore = [...data].sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.timeSeconds - b.timeSeconds;
+            })[0];
+
+            // Waktu Tercepat (jika waktu sama, pilih yang skornya lebih tinggi)
+            const fastestTime = [...data].sort((a, b) => {
+                if (a.timeSeconds !== b.timeSeconds) return a.timeSeconds - b.timeSeconds;
+                return b.score - a.score;
+            })[0];
+
+            return { highestScore, fastestTime };
+        }
+
+        // Format detik menjadi MM:SS
+        function formatTime(totalSeconds) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // Render Kartu Rekor (Nilai Tertinggi & Waktu Tercepat)
+        function renderRecordCardsHTML(data) {
+            const { highestScore, fastestTime } = getHighlights(data);
+            if (!highestScore) {
+                return `
+                    <div class="col-span-1 sm:col-span-2 bg-white/80 border border-slate-200 rounded-xl p-3 text-center text-slate-500 text-sm">
+                        Belum ada data kelompok yang menyelesaikan kuis. Jadilah yang pertama! 🚀
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="bg-white border-2 border-amber-200 rounded-xl p-3.5 shadow-sm flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center text-2xl shrink-0">🥇</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-amber-600 uppercase tracking-wide">Nilai Tertinggi</div>
+                        <div class="font-display font-bold text-slate-800 text-base truncate" title="${escapeHTML(highestScore.name)}">${escapeHTML(highestScore.name)}</div>
+                        <div class="text-xs font-bold text-slate-500">
+                            Skor <span class="text-emerald-600 text-sm">${highestScore.score}</span> • ⏱️ ${formatTime(highestScore.timeSeconds)}
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-sky-200 rounded-xl p-3.5 shadow-sm flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-sky-100 flex items-center justify-center text-2xl shrink-0">⚡</div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-sky-600 uppercase tracking-wide">Waktu Tercepat</div>
+                        <div class="font-display font-bold text-slate-800 text-base truncate" title="${escapeHTML(fastestTime.name)}">${escapeHTML(fastestTime.name)}</div>
+                        <div class="text-xs font-bold text-slate-500">
+                            ⏱️ <span class="text-sky-600 text-sm">${formatTime(fastestTime.timeSeconds)}</span> • Skor ${fastestTime.score}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Baris Tabel Papan Peringkat
+        function renderLeaderboardRowsHTML(data, highlightId = null) {
+            if (!data || data.length === 0) {
+                return `
+                    <tr>
+                        <td colspan="4" class="py-6 text-center text-slate-400 font-semibold">
+                            Belum ada data kelompok.
+                        </td>
+                    </tr>
+                `;
+            }
+
+            return data.map((item, idx) => {
+                let rankBadge = `<span class="font-bold text-slate-500">${idx + 1}</span>`;
+                if (idx === 0) rankBadge = '🥇';
+                else if (idx === 1) rankBadge = '🥈';
+                else if (idx === 2) rankBadge = '🥉';
+
+                const isCurrent = item.id === highlightId;
+                const rowClass = isCurrent ? 'bg-indigo-50/90 font-bold' : 'hover:bg-slate-50';
+
+                return `
+                    <tr class="${rowClass}">
+                        <td class="py-2.5 px-3 text-center text-base">${rankBadge}</td>
+                        <td class="py-2.5 px-3 text-slate-800">
+                            ${escapeHTML(item.name)}
+                            ${isCurrent ? '<span class="ml-1.5 text-[10px] bg-indigo-600 text-white px-2 py-0.5 rounded-full">Baru</span>' : ''}
+                        </td>
+                        <td class="py-2.5 px-3 text-center">
+                            <span class="inline-block bg-emerald-100 text-emerald-800 font-display font-bold px-2.5 py-0.5 rounded-lg">${item.score}</span>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-600">
+                            ${formatTime(item.timeSeconds)}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Mencegah XSS dari input nama
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Memperbarui ringkasan rekor di halaman awal
+        function updateHomeSummary() {
+            const data = getLeaderboardData();
+            const container = document.getElementById('homeRecordSummary');
+            if (data.length > 0) {
+                container.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">${renderRecordCardsHTML(data)}</div>`;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        /* ==============================================================
+           5. ALUR PERMAINAN (MULAI, TAMPIL SOAL, JAWAB, SELESAI)
+           ============================================================== */
+        // Acak urutan array (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('groupNameInput');
+            const errorMsg = document.getElementById('nameErrorMsg');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                errorMsg.classList.remove('hidden');
+                nameInput.classList.add('border-rose-400', 'animate-shake');
+                playTone('wrong');
+                setTimeout(() => nameInput.classList.remove('animate-shake'), 400);
+                nameInput.focus();
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            nameInput.classList.remove('border-rose-400');
+            playTone('click');
+
+            // Inisialisasi State Game
+            currentGroupName = name;
+            activeQuestions = shuffleArray(QUESTIONS_BANK); // Acak 20 soal agar seru setiap kelompok
+            currentIndex = 0;
+            currentScore = 0;
+            correctCount = 0;
+            elapsedSeconds = 0;
+            isAnswered = false;
+
+            // Update Tampilan HUD
+            document.getElementById('displayGroupName').textContent = currentGroupName;
+            document.getElementById('scoreDisplay').textContent = '0';
+            document.getElementById('timerDisplay').textContent = '00:00';
+
+            // Pindah Layar
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+
+            // Mulai Timer
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                elapsedSeconds++;
+                document.getElementById('timerDisplay').textContent = formatTime(elapsedSeconds);
+            }, 1000);
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            isAnswered = false;
+            const q = activeQuestions[currentIndex];
+            const total = activeQuestions.length;
+
+            // Update Nomor, Materi, & Progress Bar
+            document.getElementById('questionNumber').textContent = currentIndex + 1;
+            document.getElementById('progressBar').style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+            // Warna Badge Materi
+            const badge = document.getElementById('topicBadge');
+            badge.textContent = `Materi: ${q.topic}`;
+            const topicColors = {
+                "Kata Baku": "bg-sky-100 text-sky-700 border-sky-200",
+                "Kata Tidak Baku": "bg-rose-100 text-rose-700 border-rose-200",
+                "Kata Dasar": "bg-emerald-100 text-emerald-700 border-emerald-200",
+                "Kata Berimbuhan": "bg-purple-100 text-purple-700 border-purple-200"
+            };
+            badge.className = `inline-block font-bold text-xs sm:text-sm px-3 py-1 rounded-full border ${topicColors[q.topic] || 'bg-indigo-100 text-indigo-700'}`;
+
+            // Tampilkan Pertanyaan
+            const qCard = document.getElementById('questionCard');
+            qCard.classList.remove('animate-pop');
+            void qCard.offsetWidth; // Trigger reflow animasi
+            qCard.classList.add('animate-pop');
+            document.getElementById('questionText').textContent = `${currentIndex + 1}. ${q.question}`;
+
+            // Sembunyikan Kotak Umpan Balik
+            document.getElementById('feedbackBox').classList.add('hidden');
+
+            // Buat Tombol Opsi A, B, C, D
+            const labels = ['A', 'B', 'C', 'D'];
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `optBtn_${idx}`;
+                btn.className = "option-btn btn-3d w-full min-h-[58px] sm:min-h-[68px] lg:min-h-[76px] text-left bg-white hover:bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3.5 sm:p-4 lg:p-5 shadow-[0_4px_0_0_#c7d2fe] flex items-center gap-3 cursor-pointer transition group";
+                btn.onclick = () => selectAnswer(idx);
+                btn.innerHTML = `
+                    <span class="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 shrink-0 rounded-xl bg-indigo-100 group-hover:bg-indigo-600 group-hover:text-white text-indigo-700 font-display font-bold flex items-center justify-center text-base sm:text-lg transition">
+                        ${labels[idx]}
+                    </span>
+                    <span class="option-text font-bold text-slate-700 text-sm sm:text-base lg:text-lg leading-snug">${escapeHTML(optText)}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+// ... existing code ... -->
+                if (idx === q.answer) {
+                    // Tandai jawaban yang benar dengan hijau
+                    btn.className = "option-btn w-full min-h-[58px] sm:min-h-[68px] lg:min-h-[76px] text-left bg-emerald-100 border-2 border-emerald-500 rounded-2xl p-3.5 sm:p-4 lg:p-5 shadow-sm flex items-center gap-3";
+                    btn.querySelector('span:first-child').className = "w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 shrink-0 rounded-xl bg-emerald-500 text-white font-display font-bold flex items-center justify-center text-base sm:text-lg";
+                } else if (idx === selectedIndex && !isCorrect) {
+                    // Tandai jawaban salah yang dipilih dengan merah
+                    btn.className = "option-btn w-full min-h-[58px] sm:min-h-[68px] lg:min-h-[76px] text-left bg-rose-100 border-2 border-rose-500 rounded-2xl p-3.5 sm:p-4 lg:p-5 shadow-sm flex items-center gap-3 animate-shake";
+                    btn.querySelector('span:first-child').className = "w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 shrink-0 rounded-xl bg-rose-500 text-white font-display font-bold flex items-center justify-center text-base sm:text-lg";
+                } else {
+                    btn.classList.add('opacity-50');
+                }
+            });
+// ... existing code ... -->
+        // Menyesuaikan ukuran kanvas confetti jika ukuran layar berubah
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('confettiCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        /* ==============================================================
+           8. MODE LAYAR PENUH (FULLSCREEN) UNTUK HP, LAPTOP, & PID
+           ============================================================== */
+        let isPseudoFullscreen = false;
+        let toastTimeout = null;
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotice');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2600);
+        }
+
+        function isNativeFullscreen() {
+            return !!(
+                document.fullscreenElement ||
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement
+            );
+        }
+
+        function updateFullscreenUI() {
+            const active = isNativeFullscreen() || isPseudoFullscreen;
+            const icon = document.getElementById('fullscreenIcon');
+            const label = document.getElementById('fullscreenLabel');
+
+            document.body.classList.toggle('is-fullscreen', active);
+            if (icon) icon.textContent = active ? '🗗' : '⛶';
+            if (label) label.textContent = active ? 'Keluar Penuh' : 'Layar Penuh';
+
+            // Sesuaikan ulang ukuran kanvas confetti
+            const canvas = document.getElementById('confettiCanvas');
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        }
+
+        async function toggleFullscreen() {
+            playTone('click');
+            const docEl = document.documentElement;
+
+            try {
+                if (isNativeFullscreen()) {
+                    if (document.exitFullscreen) await document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+                    else if (document.msExitFullscreen) await document.msExitFullscreen();
+                    isPseudoFullscreen = false;
+                    updateFullscreenUI();
+                } else if (isPseudoFullscreen) {
+                    isPseudoFullscreen = false;
+                    updateFullscreenUI();
+                    showToast('Keluar dari mode layar penuh');
+                } else {
+                    // Coba aktifkan Native Fullscreen API
+                    const req =
+                        docEl.requestFullscreen ||
+                        docEl.webkitRequestFullscreen ||
+                        docEl.mozRequestFullScreen ||
+                        docEl.msRequestFullscreen;
+
+                    if (req) {
+                        await req.call(docEl);
+                        updateFullscreenUI();
+                        showToast('Mode Layar Penuh Aktif! Cocok untuk PID & Proyektor');
+                    } else {
+                        // Fallback untuk perangkat (misalnya iOS Safari) yang membatasi Fullscreen API
+                        isPseudoFullscreen = true;
+                        updateFullscreenUI();
+                        showToast('Mode Layar Lebar Aktif!');
+                    }
+                }
+            } catch (err) {
+                // Fallback jika berjalan di dalam iframe yang membatasi native fullscreen
+                isPseudoFullscreen = !isPseudoFullscreen;
+                updateFullscreenUI();
+                showToast(isPseudoFullscreen ? 'Mode Layar Lebar Aktif!' : 'Keluar dari mode layar lebar');
+            }
+        }
+
+        // Dengarkan perubahan status fullscreen (misalnya jika menekan tombol ESC di laptop)
+        document.addEventListener('fullscreenchange', updateFullscreenUI);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+        document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+        document.addEventListener('MSFullscreenChange', updateFullscreenUI);
+    </script>
+</body>
+</html>
